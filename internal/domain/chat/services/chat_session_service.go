@@ -55,7 +55,7 @@ func (s *ChatSessionService) UpdateSessionStatus(session *entity.ChatSession) er
 	return s.repo.UpdateSession(session)
 }
 
-func (s *ChatSessionService) GetAllChatSession() ([]entity.ChatSession, error) {
+func (s *ChatSessionService) GetAllChatSession() ([]dto.AdminSessionDto, error) {
 	return s.repo.GetAllChatSession()
 }
 

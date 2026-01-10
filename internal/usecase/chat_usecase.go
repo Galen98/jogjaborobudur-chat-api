@@ -120,10 +120,26 @@ func (u *ChatUseCase) OpenChatByUser(token string, types string) error {
 	if types == "user" {
 		session.IsRead = true
 	} else {
-		session.IsRead = true
+		session.IsReadAdmin = true
 	}
 
-	return u.chatSessionService.UpdateSessionStatus(session)
+	if err := u.chatSessionService.UpdateSessionStatus(session); err != nil {
+		return err
+	}
+
+	payload, _ := json.Marshal(session)
+
+	u.Hub.Broadcast(ws.BroadcastMessage{
+		Token: "session:" + session.UserSession,
+		Data:  payload,
+	})
+
+	u.Hub.Broadcast(ws.BroadcastMessage{
+		Token: "admin:sessions",
+		Data:  payload,
+	})
+
+	return nil
 }
 
 func (u *ChatUseCase) GetUserSession(
@@ -133,7 +149,7 @@ func (u *ChatUseCase) GetUserSession(
 	return u.chatSessionService.GetChatSessionByUser(sessionId, productId)
 }
 
-func (u *ChatUseCase) GetAdminSessions() ([]entity.ChatSession, error) {
+func (u *ChatUseCase) GetAdminSessions() ([]dto.AdminSessionDto, error) {
 	return u.chatSessionService.GetAllChatSession()
 }
 

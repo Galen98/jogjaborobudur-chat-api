@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"jogjaborobudur-chat/internal/domain/chat/dto"
 	"jogjaborobudur-chat/internal/domain/chat/entity"
 	"jogjaborobudur-chat/internal/domain/chat/interfaces"
 	"time"
@@ -47,7 +48,6 @@ func (r *ChatSessionRepository) UpdateSession(session *entity.ChatSession) error
 			"updated_at":    time.Now(),
 		}).Error
 }
-
 func (r *ChatSessionRepository) GetAllChatSessionByUser(sessionId string) ([]entity.ChatSession, error) {
 	var sessions []entity.ChatSession
 
@@ -63,17 +63,30 @@ func (r *ChatSessionRepository) GetAllChatSessionByUser(sessionId string) ([]ent
 	return sessions, nil
 }
 
-func (r *ChatSessionRepository) GetAllChatSession() ([]entity.ChatSession, error) {
-	var session []entity.ChatSession
+func (r *ChatSessionRepository) GetAllChatSession() ([]dto.AdminSessionDto, error) {
+	var result []dto.AdminSessionDto
 
-	query := r.db.Model(&entity.ChatSession{})
-	query = query.Order("updated_at DESC")
+	err := r.db.Table("chat_session cs").
+		Select(`
+			cs.id,
+			cs.user_session,
+			cs.product_name,
+			cs.thumbnail,
+			cs.is_read,
+			cs.is_read_admin,
+			cs.token,
+			cs.updated_at,
+			uc.full_name
+		`).
+		Joins("LEFT JOIN user_chat uc ON uc.session = cs.user_session").
+		Order("cs.updated_at DESC").
+		Scan(&result).Error
 
-	if err := query.Find(&session).Error; err != nil {
+	if err != nil {
 		return nil, err
 	}
 
-	return session, nil
+	return result, nil
 }
 
 func (r *ChatSessionRepository) GetChatSessionByToken(token string) (*entity.ChatSession, error) {
