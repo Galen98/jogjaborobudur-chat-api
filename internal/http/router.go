@@ -8,8 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func SetupRoute(db *gorm.DB, uc *usecase.ChatUseCase) *gin.Engine {
-	r := gin.Default()
+func SetupRoute(r *gin.Engine, db *gorm.DB, uc *usecase.ChatUseCase) *gin.Engine {
 
 	api := r.Group("/api")
 	{

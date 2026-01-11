@@ -11,11 +11,11 @@ func BuildConversationHTML(conv *entity.ChatConversation) string {
 	var buf bytes.Buffer
 
 	for _, m := range conv.Messages {
-		align := "left"
+		align := "right"
 		bg := "#f1f1f1"
 
 		if m.SenderType == "admin" {
-			align = "right"
+			align = "left"
 			bg = "#d1e7ff"
 		}
 

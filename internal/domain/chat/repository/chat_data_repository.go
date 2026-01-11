@@ -45,7 +45,7 @@ func (r *ChatDataRepository) GetConversationByToken(token string) (*entity.ChatC
 func (r *ChatDataRepository) GetMessagesByToken(token string, limit int, offset int) ([]entity.ChatData, error) {
 	var messages []entity.ChatData
 
-	err := r.db.Where("chat_session_token = ?", token).Order("created_at DESC").Limit(limit).Offset(offset).Find(&messages).Error
+	err := r.db.Where("chat_session_token = ?", token).Order("created_at ASC").Limit(limit).Offset(offset).Find(&messages).Error
 
 	if err != nil {
 		return nil, err

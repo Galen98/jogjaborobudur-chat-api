@@ -20,12 +20,12 @@ func (s *UserChatService) CreateUser(req dto.CreateUserChatRequest) (*dto.UserCh
 	if req.Email == "" || req.FullName == "" || req.Session == "" {
 		return nil, errors.New("email, fullname wajib diisi")
 	}
-
+	expiredAt := time.Now().AddDate(0, 0, 5)
 	user := &entity.UserChat{
 		FullName:    req.FullName,
 		Email:       req.Email,
 		Session:     req.Session,
-		ExpiredDate: req.ExpiredDate,
+		ExpiredDate: expiredAt,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}

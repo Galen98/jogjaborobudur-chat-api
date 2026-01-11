@@ -3,6 +3,7 @@ package main
 import (
 	"jogjaborobudur-chat/config"
 	"log"
+	"time"
 
 	"jogjaborobudur-chat/internal/domain/chat/email"
 	"jogjaborobudur-chat/internal/domain/chat/repository"
@@ -12,6 +13,8 @@ import (
 	"jogjaborobudur-chat/internal/usecase"
 	"jogjaborobudur-chat/internal/ws"
 
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
@@ -65,9 +68,34 @@ func main() {
 		wsHub,
 	)
 
+	r := gin.Default()
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:8000",
+			"http://localhost:8080",
+			"http://localhost:5173",
+			"https://jogjaborobudur.com",
+			"https://www.jogjaborobudur.com",
+		},
+		AllowMethods: []string{
+			"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH",
+		},
+		AllowHeaders: []string{
+			"Origin",
+			"Content-Type",
+			"Authorization",
+		},
+		ExposeHeaders: []string{
+			"Content-Length",
+		},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+
 	// ===== Router =====
-	r := httpRouter.SetupRoute(db, uc)
+	httpRouter.SetupRoute(r, db, uc)
 
 	log.Println("server runnig")
-	r.Run(":8080")
+	r.Run(":8000")
 }

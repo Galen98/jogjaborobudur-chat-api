@@ -3,10 +3,9 @@ package dto
 import "time"
 
 type CreateUserChatRequest struct {
-	FullName    string    `json:"full_name"`
-	Email       string    `json:"email"`
-	Session     string    `json:"session"`
-	ExpiredDate time.Time `json:"expired_date"`
+	FullName string `json:"full_name"`
+	Email    string `json:"email"`
+	Session  string `json:"session"`
 }
 
 type UserChatResponse struct {

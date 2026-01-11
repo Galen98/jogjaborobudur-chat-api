@@ -27,6 +27,7 @@ func ChatRoute(r *gin.RouterGroup, db *gorm.DB, uc *usecase.ChatUseCase) {
 	r.GET("/user-chat-email", userCtrl.GetUserByEmail)
 
 	r.POST("/init-session", chatSessionCtrl.InitChatSession)
+	r.GET("/user-session", useChatCtrl.GetUserSession)
 
 	r.GET("/admin/chat-sessions", useChatCtrl.GetAdminSessions)
 	r.GET("/user/chat-session", useChatCtrl.GetAllUserChatSession)
