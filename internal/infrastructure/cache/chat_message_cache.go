@@ -57,7 +57,7 @@ func (c *ChatMessageCache) PushMessage(token string, msg entity.ChatData) error 
 
 	pipe.RPush(ctx, key, data)
 
-	pipe.LTrim(ctx, key, -20, -1)
+	pipe.LTrim(ctx, key, -100, -1)
 
 	pipe.Expire(ctx, key, c.ttl)
 
