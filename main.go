@@ -97,5 +97,5 @@ func main() {
 	httpRouter.SetupRoute(r, db, uc)
 
 	log.Println("server runnig")
-	r.Run(":8000")
+	r.Run(":8080")
 }
