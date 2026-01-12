@@ -19,6 +19,10 @@ import (
 )
 
 func main() {
+	r := gin.Default()
+	r.GET("/healthcheck", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	})
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -67,8 +71,6 @@ func main() {
 		emailService,
 		wsHub,
 	)
-
-	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
