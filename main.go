@@ -5,14 +5,6 @@ import (
 	"log"
 	"time"
 
-	"jogjaborobudur-chat/internal/domain/chat/email"
-	"jogjaborobudur-chat/internal/domain/chat/repository"
-	"jogjaborobudur-chat/internal/domain/chat/services"
-	httpRouter "jogjaborobudur-chat/internal/http"
-	"jogjaborobudur-chat/internal/infrastructure/cache"
-	"jogjaborobudur-chat/internal/usecase"
-	"jogjaborobudur-chat/internal/ws"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -23,6 +15,9 @@ func main() {
 	r.GET("/healthcheck", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	})
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "hello"})
+	})
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -32,45 +27,45 @@ func main() {
 	_ = rdb
 
 	//init db
-	if err := config.InitDB(); err != nil {
-		log.Fatal("failed connect db", err)
-	}
+	// if err := config.InitDB(); err != nil {
+	// 	log.Fatal("failed connect db", err)
+	// }
 
-	db := config.DB
-	chatSessionRepo := repository.NewChatSessionRepository(db)
-	chatMessageRepo := repository.NewChatDataRepository(db)
-	wsHub := ws.NewHub()
-	go wsHub.Run()
+	// db := config.DB
+	// chatSessionRepo := repository.NewChatSessionRepository(db)
+	// chatMessageRepo := repository.NewChatDataRepository(db)
+	// wsHub := ws.NewHub()
+	// go wsHub.Run()
 
-	chatCache := cache.NewChatMessageCache(rdb)
-	chatDataService := services.NewChatDataService(
-		chatSessionRepo,
-		chatMessageRepo,
-		wsHub,
-		chatCache,
-	)
-	userChatRepo := repository.NewUserChatRepository(db)
-	chatSessionService := services.NewChatSessionService(chatSessionRepo)
-	userChatService := services.NewChatService(userChatRepo)
+	// chatCache := cache.NewChatMessageCache(rdb)
+	// chatDataService := services.NewChatDataService(
+	// 	chatSessionRepo,
+	// 	chatMessageRepo,
+	// 	wsHub,
+	// 	chatCache,
+	// )
+	// userChatRepo := repository.NewUserChatRepository(db)
+	// chatSessionService := services.NewChatSessionService(chatSessionRepo)
+	// userChatService := services.NewChatService(userChatRepo)
 
-	smtpCfg := config.LoadSMTPConfig()
+	// smtpCfg := config.LoadSMTPConfig()
 
-	smtpClient := email.NewSMTPClient(
-		smtpCfg.Host,
-		smtpCfg.Port,
-		smtpCfg.Username,
-		smtpCfg.Password,
-		smtpCfg.From,
-	)
+	// smtpClient := email.NewSMTPClient(
+	// 	smtpCfg.Host,
+	// 	smtpCfg.Port,
+	// 	smtpCfg.Username,
+	// 	smtpCfg.Password,
+	// 	smtpCfg.From,
+	// )
 
-	emailService := email.NewEmailService(smtpClient)
-	uc := usecase.NewChatUseCase(
-		chatDataService,
-		chatSessionService,
-		userChatService,
-		emailService,
-		wsHub,
-	)
+	// emailService := email.NewEmailService(smtpClient)
+	// uc := usecase.NewChatUseCase(
+	// 	chatDataService,
+	// 	chatSessionService,
+	// 	userChatService,
+	// 	emailService,
+	// 	wsHub,
+	// )
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
@@ -96,7 +91,7 @@ func main() {
 	}))
 
 	// ===== Router =====
-	httpRouter.SetupRoute(r, db, uc)
+	// httpRouter.SetupRoute(r, db, uc)
 
 	log.Println("server runnig")
 	r.Run(":8080")
