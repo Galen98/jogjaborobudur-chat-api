@@ -1,10 +1,17 @@
 package ws
 
+import (
+	"context"
+
+	"github.com/redis/go-redis/v9"
+)
+
 type Hub struct {
 	rooms      map[string]map[*Client]bool
 	register   chan *Client
 	unregister chan *Client
 	broadcast  chan BroadcastMessage
+	redisSub   *redis.Client
 }
 
 type BroadcastMessage struct {
@@ -12,12 +19,13 @@ type BroadcastMessage struct {
 	Data  []byte
 }
 
-func NewHub() *Hub {
+func NewHub(redisClient *redis.Client) *Hub {
 	return &Hub{
 		rooms:      make(map[string]map[*Client]bool),
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
 		broadcast:  make(chan BroadcastMessage),
+		redisSub:   redisClient,
 	}
 }
 
@@ -56,6 +64,24 @@ func (h *Hub) Run() {
 					}
 				}
 			}
+		}
+	}
+}
+
+func (h *Hub) ListenRedis() {
+	ctx := context.Background()
+
+	sub := h.redisSub.PSubscribe(
+		ctx,
+		"chat:*",
+		"session:*",
+		"admin:sessions",
+	)
+
+	for msg := range sub.Channel() {
+		h.broadcast <- BroadcastMessage{
+			Token: msg.Channel,
+			Data:  []byte(msg.Payload),
 		}
 	}
 }

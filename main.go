@@ -3,6 +3,7 @@ package main
 import (
 	"jogjaborobudur-chat/config"
 	"log"
+	"net/http"
 	"time"
 
 	"jogjaborobudur-chat/internal/domain/chat/email"
@@ -42,8 +43,9 @@ func main() {
 	db := config.DB
 	chatSessionRepo := repository.NewChatSessionRepository(db)
 	chatMessageRepo := repository.NewChatDataRepository(db)
-	wsHub := ws.NewHub()
+	wsHub := ws.NewHub(rdb)
 	go wsHub.Run()
+	go wsHub.ListenRedis()
 
 	chatCache := cache.NewChatMessageCache(rdb)
 	chatDataService := services.NewChatDataService(
@@ -101,6 +103,7 @@ func main() {
 	// ===== Router =====
 	httpRouter.SetupRoute(r, db, uc)
 
+	// http.HandleFunc("/api/chat/ws", wsHub.ServeWS)
 	log.Println("server runnig")
-	r.Run(":8080")
+	http.ListenAndServe(":8080", nil)
 }
