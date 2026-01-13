@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"jogjaborobudur-chat/internal/domain/chat/dto"
@@ -9,6 +10,8 @@ import (
 	"jogjaborobudur-chat/internal/domain/chat/services"
 	"jogjaborobudur-chat/internal/ws"
 	"time"
+
+	"github.com/redis/go-redis/v9"
 )
 
 type ChatUseCase struct {
@@ -17,6 +20,7 @@ type ChatUseCase struct {
 	userChatService    *services.UserChatService
 	emailService       *email.EmailService
 	Hub                *ws.Hub
+	redis              *redis.Client
 }
 
 func NewChatUseCase(
@@ -25,6 +29,7 @@ func NewChatUseCase(
 	userChatService *services.UserChatService,
 	emailService *email.EmailService,
 	hub *ws.Hub,
+	redis *redis.Client,
 ) *ChatUseCase {
 	return &ChatUseCase{
 		chatDataService:    chatDataService,
@@ -32,10 +37,13 @@ func NewChatUseCase(
 		userChatService:    userChatService,
 		emailService:       emailService,
 		Hub:                hub,
+		redis:              redis,
 	}
 }
 
-func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, error) {
+func (u *ChatUseCase) SendMessage(
+	req dto.SendChatRequest,
+) (*entity.ChatData, error) {
 
 	session, err := u.chatSessionService.GetByToken(req.Token)
 	if err != nil {
@@ -46,6 +54,7 @@ func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, er
 		return nil, errors.New("token required")
 	}
 
+	// simpan message
 	msg, err := u.chatDataService.SendMessage(req)
 	if err != nil {
 		return nil, err
@@ -66,27 +75,22 @@ func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, er
 		return nil, err
 	}
 
+	// 🔥 PUBLISH KE REDIS (BUKAN WS)
 	msgPayload, _ := json.Marshal(msg)
-
-	u.Hub.Broadcast(ws.BroadcastMessage{
-		Token: "chat:" + session.Token,
-		Data:  msgPayload,
-	})
-
 	sessionPayload, _ := json.Marshal(session)
 
-	u.Hub.Broadcast(ws.BroadcastMessage{
-		Token: "session:" + session.UserSession,
-		Data:  sessionPayload,
-	})
+	ctx := context.Background()
 
-	u.Hub.Broadcast(ws.BroadcastMessage{
-		Token: "admin:sessions",
-		Data:  sessionPayload,
-	})
+	// realtime chat room
+	u.redis.Publish(ctx, "chat:"+session.Token, msgPayload)
 
-	_ = u.chatSessionService.UpdateSessionStatus(session)
+	// realtime user chat list
+	u.redis.Publish(ctx, "session:"+session.UserSession, sessionPayload)
 
+	// realtime admin dashboard
+	u.redis.Publish(ctx, "admin:sessions", sessionPayload)
+
+	// email (side effect, OK)
 	if req.SenderType == "admin" {
 		user, err := u.userChatService.GetBySession(session.UserSession)
 		if err == nil && user.Email != "" {
@@ -99,6 +103,7 @@ func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, er
 			)
 		}
 	}
+
 	return msg, nil
 }
 

@@ -52,6 +52,7 @@ func main() {
 		chatMessageRepo,
 		wsHub,
 		chatCache,
+		rdb,
 	)
 	userChatRepo := repository.NewUserChatRepository(db)
 	chatSessionService := services.NewChatSessionService(chatSessionRepo)
@@ -74,6 +75,7 @@ func main() {
 		userChatService,
 		emailService,
 		wsHub,
+		rdb,
 	)
 
 	r.Use(cors.New(cors.Config{
