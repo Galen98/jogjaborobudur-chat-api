@@ -3,7 +3,6 @@ package main
 import (
 	"jogjaborobudur-chat/config"
 	"log"
-	"net/http"
 	"time"
 
 	"jogjaborobudur-chat/internal/domain/chat/email"
@@ -105,5 +104,5 @@ func main() {
 
 	// http.HandleFunc("/api/chat/ws", wsHub.ServeWS)
 	log.Println("server runnig")
-	http.ListenAndServe(":8080", nil)
+	r.Run(":8080")
 }
