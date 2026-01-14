@@ -117,8 +117,6 @@ func (u *ChatUseCase) OpenChatByUser(token string, types string) error {
 		session.IsReadAdmin = true
 	}
 
-	session.UpdatedAt = time.Now()
-
 	if err := u.chatSessionService.UpdateSessionStatusOpen(session); err != nil {
 		return err
 	}
