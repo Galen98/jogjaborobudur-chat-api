@@ -11,7 +11,6 @@ import (
 	httpRouter "jogjaborobudur-chat/internal/http"
 	"jogjaborobudur-chat/internal/infrastructure/cache"
 	"jogjaborobudur-chat/internal/usecase"
-	"jogjaborobudur-chat/internal/ws"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -30,6 +29,9 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	//pusher
+	config.InitPusher()
+
 	// test redis
 	rdb := config.NewRedis()
 	_ = rdb
@@ -42,17 +44,14 @@ func main() {
 	db := config.DB
 	chatSessionRepo := repository.NewChatSessionRepository(db)
 	chatMessageRepo := repository.NewChatDataRepository(db)
-	wsHub := ws.NewHub(rdb)
-	go wsHub.Run()
-	go wsHub.ListenRedis()
+	// wsHub := ws.NewHub()
+	// go wsHub.Run()
 
 	chatCache := cache.NewChatMessageCache(rdb)
 	chatDataService := services.NewChatDataService(
 		chatSessionRepo,
 		chatMessageRepo,
-		wsHub,
 		chatCache,
-		rdb,
 	)
 	userChatRepo := repository.NewUserChatRepository(db)
 	chatSessionService := services.NewChatSessionService(chatSessionRepo)
@@ -74,8 +73,6 @@ func main() {
 		chatSessionService,
 		userChatService,
 		emailService,
-		wsHub,
-		rdb,
 	)
 
 	r.Use(cors.New(cors.Config{
@@ -104,7 +101,6 @@ func main() {
 	// ===== Router =====
 	httpRouter.SetupRoute(r, db, uc)
 
-	// http.HandleFunc("/api/chat/ws", wsHub.ServeWS)
 	log.Println("server runnig")
 	r.Run(":8080")
 }

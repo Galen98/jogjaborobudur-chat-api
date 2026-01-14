@@ -17,17 +17,17 @@ func NewChatUseCaseController(u *usecase.ChatUseCase) *ChatUseCaseController {
 	return &ChatUseCaseController{usecase: u}
 }
 
-func (c *ChatUseCaseController) ConnectWS(ctx *gin.Context) {
-	token := ctx.Param("token")
-	types := ctx.Param("types")
+// func (c *ChatUseCaseController) ConnectWS(ctx *gin.Context) {
+// 	token := ctx.Param("token")
+// 	types := ctx.Param("types")
 
-	_ = types
-	q := ctx.Request.URL.Query()
-	q.Set("token", token)
-	ctx.Request.URL.RawQuery = q.Encode()
+// 	_ = types
+// 	q := ctx.Request.URL.Query()
+// 	q.Set("token", token)
+// 	ctx.Request.URL.RawQuery = q.Encode()
 
-	c.usecase.Hub.ServeWS(ctx.Writer, ctx.Request)
-}
+// 	c.usecase.Hub.ServeWS(ctx.Writer, ctx.Request)
+// }
 
 func (c *ChatUseCaseController) SendMessage(ctx *gin.Context) {
 	var req dto.SendChatRequest

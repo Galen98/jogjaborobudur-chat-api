@@ -1,46 +1,32 @@
 package services
 
 import (
-	"context"
-	"encoding/json"
 	"jogjaborobudur-chat/internal/domain/chat/dto"
 	"jogjaborobudur-chat/internal/domain/chat/entity"
 	"jogjaborobudur-chat/internal/domain/chat/interfaces"
 	"jogjaborobudur-chat/internal/infrastructure/cache"
-	"jogjaborobudur-chat/internal/ws"
 	"time"
-
-	"github.com/redis/go-redis/v9"
 )
 
 type ChatDataService struct {
 	sessionRepo interfaces.ChatSessionInterface
 	messageRepo interfaces.ChatDataInterface
-	wsHub       *ws.Hub
 	cache       *cache.ChatMessageCache
-	redis       *redis.Client
 }
 
 func NewChatDataService(
 	sessionRepo interfaces.ChatSessionInterface,
 	messageRepo interfaces.ChatDataInterface,
-	wsHub *ws.Hub,
 	cache *cache.ChatMessageCache,
-	redis *redis.Client,
 ) *ChatDataService {
 	return &ChatDataService{
 		sessionRepo: sessionRepo,
 		messageRepo: messageRepo,
-		wsHub:       wsHub,
 		cache:       cache,
-		redis:       redis,
 	}
 }
 
-func (s *ChatDataService) SendMessage(
-	req dto.SendChatRequest,
-) (*entity.ChatData, error) {
-
+func (s *ChatDataService) SendMessage(req dto.SendChatRequest) (*entity.ChatData, error) {
 	chat := &entity.ChatData{
 		ChatSessionToken: req.Token,
 		Message:          &req.Message,
@@ -54,13 +40,6 @@ func (s *ChatDataService) SendMessage(
 	}
 
 	_ = s.cache.PushMessage(req.Token, *saved)
-
-	payload, _ := json.Marshal(saved)
-	s.redis.Publish(
-		context.Background(),
-		"chat:"+req.Token,
-		payload,
-	)
 
 	return saved, nil
 }

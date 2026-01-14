@@ -11,6 +11,7 @@ type ChatSessionInterface interface {
 	GetAllChatSessionByUser(session string) ([]entity.ChatSession, error)
 	GetAllChatSession() ([]dto.AdminSessionDto, error)
 	UpdateSession(session *entity.ChatSession) error
+	UpdateSessionOpen(session *entity.ChatSession) error
 	OpenChatByUser(token string) error
 	OpenChatByAdmin(token string) error
 	GetChatSessionByToken(token string) (*entity.ChatSession, error)

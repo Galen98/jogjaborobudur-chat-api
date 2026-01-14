@@ -34,6 +34,5 @@ func ChatRoute(r *gin.RouterGroup, db *gorm.DB, uc *usecase.ChatUseCase) {
 	r.POST("/send", useChatCtrl.SendMessage)
 	r.GET("/messages", useChatCtrl.GetMessages)
 	r.PATCH("/open/user/:token/:types", useChatCtrl.OpenChatByUser)
-	r.GET("/ws/user/:token/:types", useChatCtrl.ConnectWS)
 
 }
