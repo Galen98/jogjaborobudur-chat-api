@@ -1,0 +1,45 @@
+<div id="chatProductWidget" class="chat-room-widget font-jogjaborobudur shadow-lg rounded">
+    <div class="chat-header p-2 bg-light border-bottom text-dark d-flex align-items-center">
+        
+        <button id="backBtn" class="btn btn-sm btn-none me-2 p-1">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <img src="" id="chatProductImage" 
+             class="chat-product-img me-2">
+
+        <div class="chat-product-info flex-grow-1 color-jb">
+            <strong class="product-name" id="chatProductName"></strong>
+        </div>
+        <button id="chatCloseBtnProd" class="btn btn-sm btn-none ms-2 p-1">✕</button>
+    </div>
+
+    <div class="chat-body p-3">
+        <div class="chat-loading-overlay" id="chatLoading">
+            <div class="spinner"></div>
+        </div>
+        <div id="chatMessages" class="chat-messages">
+            <div class="chat-bubble admin">
+
+                <span class="chat-time"></span>
+            </div>
+
+            <div class="chat-bubble user">
+                
+                <span class="chat-time"></span>
+            </div>
+
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type a message...">
+            <button id="sendChatBtn" class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+        <div id="chatEndedBlock" class="chat-ended-block" style="display: none;">
+            <p class="ended-text">This chat session has ended.</p>
+            <button id="restartChatBtn" class="restart-btn">Start Again</button>
+        </div>
+
+
+    </div>
+</div>
