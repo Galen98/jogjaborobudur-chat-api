@@ -63,6 +63,10 @@ func (s *ChatSessionService) GetAllChatSession() ([]dto.AdminSessionDto, error) 
 	return s.repo.GetAllChatSession()
 }
 
+func (s *ChatSessionService) GetAdminSessionByToken(token string) (*dto.AdminSessionDto, error) {
+	return s.repo.GetAdminSessionByToken(token)
+}
+
 func (s *ChatSessionService) GetAllChatSessionByUser(sessionId string) ([]entity.ChatSession, error) {
 	return s.repo.GetAllChatSessionByUser(sessionId)
 }

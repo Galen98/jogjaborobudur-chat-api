@@ -80,6 +80,7 @@ func (r *ChatSessionRepository) GetAllChatSession() ([]dto.AdminSessionDto, erro
 		Select(`
 			cs.id,
 			cs.user_session,
+			cs.product_id,
 			cs.product_name,
 			cs.thumbnail,
 			cs.is_read,
@@ -97,6 +98,28 @@ func (r *ChatSessionRepository) GetAllChatSession() ([]dto.AdminSessionDto, erro
 	}
 
 	return result, nil
+}
+
+func (r *ChatSessionRepository) GetAdminSessionByToken(token string) (*dto.AdminSessionDto, error) {
+	var result dto.AdminSessionDto
+
+	err := r.db.Table("chat_session cs").
+		Select(`
+            cs.id,
+            cs.token,
+            cs.product_id,
+            cs.product_name,
+            cs.thumbnail,
+            cs.is_read,
+            cs.is_read_admin,
+            cs.updated_at,
+            uc.full_name
+        `).
+		Joins("LEFT JOIN user_chat uc ON uc.session = cs.user_session").
+		Where("cs.token = ?", token).
+		Scan(&result).Error
+
+	return &result, err
 }
 
 func (r *ChatSessionRepository) GetChatSessionByToken(token string) (*entity.ChatSession, error) {

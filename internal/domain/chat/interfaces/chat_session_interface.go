@@ -13,6 +13,7 @@ type ChatSessionInterface interface {
 	UpdateSession(session *entity.ChatSession) error
 	UpdateSessionOpen(session *entity.ChatSession) error
 	OpenChatByUser(token string) error
+	GetAdminSessionByToken(token string) (*dto.AdminSessionDto, error)
 	OpenChatByAdmin(token string) error
 	GetChatSessionByToken(token string) (*entity.ChatSession, error)
 }

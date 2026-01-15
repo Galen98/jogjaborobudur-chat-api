@@ -63,6 +63,11 @@ func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, er
 		return nil, err
 	}
 
+	adminSession, err := u.chatSessionService.GetAdminSessionByToken(session.Token)
+	if err != nil {
+		return nil, err
+	}
+
 	_ = config.Pusher.Trigger(
 		"chat-"+session.Token,
 		"new-message",
@@ -77,7 +82,7 @@ func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, er
 	_ = config.Pusher.Trigger(
 		"admin-sessions",
 		"session-update",
-		session,
+		adminSession,
 	)
 
 	if req.SenderType == "admin" {
@@ -121,17 +126,17 @@ func (u *ChatUseCase) OpenChatByUser(token string, types string) error {
 		return err
 	}
 
-	_ = config.Pusher.Trigger(
-		"session-"+session.UserSession,
-		"session-update",
-		session,
-	)
+	// _ = config.Pusher.Trigger(
+	// 	"session-"+session.UserSession,
+	// 	"session-update",
+	// 	session,
+	// )
 
-	_ = config.Pusher.Trigger(
-		"admin-sessions",
-		"session-update",
-		session,
-	)
+	// _ = config.Pusher.Trigger(
+	// 	"admin-sessions",
+	// 	"session-update",
+	// 	session,
+	// )
 
 	return nil
 }
