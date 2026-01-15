@@ -106,6 +106,7 @@ func (r *ChatSessionRepository) GetAdminSessionByToken(token string) (*dto.Admin
 	err := r.db.Table("chat_session cs").
 		Select(`
             cs.id,
+			cs.user_session,
             cs.token,
             cs.product_id,
             cs.product_name,
