@@ -5,6 +5,7 @@ type CreateChatSessionRequest struct {
 	Session     string `json:"session"`
 	ProductId   uint   `json:"product_id"`
 	Thumbnail   string `json:"thumbnail"`
+	Link        string `json:"link"`
 	ProductName string `json:"product_name"`
 }
 
@@ -26,6 +27,7 @@ type GetAllSessionUserResponse struct {
 	ProductName string `json:"product_name"`
 	Thumbnail   string `json:"thumbnail"`
 	Token       string `json:"token"`
+	Link        string `json:"link"`
 	UpdatedAt   string `json:"updated_at"`
 }
 
@@ -35,6 +37,7 @@ type GetAllSessionAdminResponse struct {
 	ProductName string `json:"product_name"`
 	Thumbnail   string `json:"thumbnail"`
 	UpdatedAt   string `json:"updated_at"`
+	Link        string `json:"link"`
 	Token       string `json:"token"`
 }
 

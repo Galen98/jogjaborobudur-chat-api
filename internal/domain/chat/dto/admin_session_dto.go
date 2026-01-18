@@ -12,5 +12,6 @@ type AdminSessionDto struct {
 	IsRead      bool      `json:"is_read"`
 	IsReadAdmin bool      `json:"is_read_admin"`
 	Token       string    `json:"token"`
+	Link        string    `json:"link"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }

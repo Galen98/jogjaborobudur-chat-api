@@ -11,6 +11,7 @@ type ChatSession struct {
 	IsReadAdmin bool      `gorm:"column:is_read_admin"`
 	UserSession string    `gorm:"column:user_session"`
 	Token       string    `gorm:"column:token"`
+	Link        string    `gorm:"column:link"`
 	CreatedAt   time.Time `gorm:"column:created_at"`
 	UpdatedAt   time.Time `gorm:"column:updated_at"`
 }

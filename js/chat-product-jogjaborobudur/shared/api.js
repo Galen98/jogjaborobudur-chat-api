@@ -1,1 +1,0 @@
-const API = 'https://api.jogjaborobudur.com/chat/';

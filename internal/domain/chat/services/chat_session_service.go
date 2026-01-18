@@ -26,6 +26,7 @@ func (s *ChatSessionService) GetChatSessionByUser(
 func (s *ChatSessionService) InitChatSession(req dto.CreateChatSessionRequest) error {
 	session := &entity.ChatSession{
 		Token:       req.Token,
+		Link:        req.Link,
 		ProductID:   req.ProductId,
 		ProductName: req.ProductName,
 		UserSession: req.Session,

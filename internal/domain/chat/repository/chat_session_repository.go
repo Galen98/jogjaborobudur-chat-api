@@ -79,6 +79,7 @@ func (r *ChatSessionRepository) GetAllChatSession() ([]dto.AdminSessionDto, erro
 	err := r.db.Table("chat_session cs").
 		Select(`
 			cs.id,
+			cs.link,
 			cs.user_session,
 			cs.product_id,
 			cs.product_name,
@@ -108,6 +109,7 @@ func (r *ChatSessionRepository) GetAdminSessionByToken(token string) (*dto.Admin
             cs.id,
 			cs.user_session,
             cs.token,
+			cs.link,
             cs.product_id,
             cs.product_name,
             cs.thumbnail,
