@@ -16,4 +16,5 @@ type ChatSessionInterface interface {
 	GetAdminSessionByToken(token string) (*dto.AdminSessionDto, error)
 	OpenChatByAdmin(token string) error
 	GetChatSessionByToken(token string) (*entity.ChatSession, error)
+	//DeleteUserSessionByToken(token string) error
 }
