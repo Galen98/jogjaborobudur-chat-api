@@ -93,6 +93,8 @@ func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, er
 				user.Email,
 				user.FullName,
 				session.ProductName,
+				session.Thumbnail,
+				session.Link,
 				conv,
 			)
 		}

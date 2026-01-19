@@ -24,6 +24,8 @@ func (s *EmailService) SendConversationEmail(
 	to string,
 	fullName string,
 	productName string,
+	productThumbnail string,
+	productLink string,
 	conv *entity.ChatConversation,
 ) error {
 
@@ -33,9 +35,14 @@ func (s *EmailService) SendConversationEmail(
 		Title(productName),
 	)
 
+	productCardHTML := BuildProductCardHTML(
+		productName,
+		productThumbnail,
+		productLink,
+	)
 	messagesHTML := BuildConversationHTML(conv)
 
-	htmlBody, err := LoadConversationTemplate(messagesHTML)
+	htmlBody, err := LoadConversationTemplate(messagesHTML, productCardHTML)
 	if err != nil {
 		return err
 	}
