@@ -68,11 +68,16 @@ func main() {
 	)
 
 	emailService := email.NewEmailService(smtpClient)
+	adminPushService, err := services.NewAdminPushService()
+	if err != nil {
+		log.Fatalf("error load push service", err)
+	}
 	uc := usecase.NewChatUseCase(
 		chatDataService,
 		chatSessionService,
 		userChatService,
 		emailService,
+		adminPushService,
 	)
 
 	r.Use(cors.New(cors.Config{

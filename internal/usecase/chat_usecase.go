@@ -15,6 +15,7 @@ type ChatUseCase struct {
 	chatSessionService *services.ChatSessionService
 	userChatService    *services.UserChatService
 	emailService       *email.EmailService
+	pushService        *services.AdminPushService
 }
 
 func NewChatUseCase(
@@ -22,13 +23,37 @@ func NewChatUseCase(
 	chatSessionService *services.ChatSessionService,
 	userChatService *services.UserChatService,
 	emailService *email.EmailService,
+	pushService *services.AdminPushService,
 ) *ChatUseCase {
 	return &ChatUseCase{
 		chatDataService:    chatDataService,
 		chatSessionService: chatSessionService,
 		userChatService:    userChatService,
 		emailService:       emailService,
+		pushService:        pushService,
 	}
+}
+
+func (u *ChatUseCase) pushNotifyAdminIfNeeded(
+	session *entity.ChatSession,
+	msg *entity.ChatData,
+	req dto.SendChatRequest,
+) {
+	if req.SenderType != "user" {
+		return
+	}
+
+	if u.pushService == nil {
+		return
+	}
+
+	if session.IsReadAdmin {
+		return
+	}
+
+	go func() {
+		_ = u.pushService.NotifyNewChat("Test", "Halo admin 🔔")
+	}()
 }
 
 func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, error) {
@@ -84,6 +109,8 @@ func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, er
 		"session-update",
 		adminSession,
 	)
+
+	u.pushNotifyAdminIfNeeded(session, msg, req)
 
 	if req.SenderType == "admin" {
 		user, err := u.userChatService.GetBySession(session.UserSession)
