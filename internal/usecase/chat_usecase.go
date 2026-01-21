@@ -52,7 +52,10 @@ func (u *ChatUseCase) pushNotifyAdminIfNeeded(
 	}
 
 	go func() {
-		_ = u.pushService.NotifyNewChat("Test", "Halo admin 🔔")
+		_ = u.pushService.NotifyNewChat(
+			session.ProductName,
+			*msg.Message,
+		)
 	}()
 }
 
