@@ -158,21 +158,21 @@ func (u *ChatUseCase) OpenChatByUser(token string, types string) error {
 		return err
 	}
 
-	adminSession, err := u.chatSessionService.GetAdminSessionByToken(session.Token)
-	if err != nil {
-		return nil
-	}
-	_ = config.Pusher.Trigger(
-		"session-"+session.UserSession,
-		"session-update",
-		session,
-	)
+	// adminSession, err := u.chatSessionService.GetAdminSessionByToken(session.Token)
+	// if err != nil {
+	// 	return nil
+	// }
+	// _ = config.Pusher.Trigger(
+	// 	"session-"+session.UserSession,
+	// 	"session-update",
+	// 	session,
+	// )
 
-	_ = config.Pusher.Trigger(
-		"admin-sessions",
-		"session-update",
-		adminSession,
-	)
+	// _ = config.Pusher.Trigger(
+	// 	"admin-sessions",
+	// 	"session-update",
+	// 	adminSession,
+	// )
 
 	return nil
 }
