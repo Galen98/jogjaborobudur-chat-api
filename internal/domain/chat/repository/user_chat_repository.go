@@ -62,7 +62,7 @@ func (r *UserChatRepository) DeleteExpiredUsers() error {
 		if err := tx.
 			Model(&entity.UserChat{}).
 			Where("expired_date <= CURRENT_DATE").
-			Pluck("user_session", &userSessions).
+			Pluck("session", &userSessions).
 			Error; err != nil {
 			return err
 		}
