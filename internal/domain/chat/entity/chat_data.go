@@ -8,8 +8,8 @@ type ChatData struct {
 	Message          *string   `gorm:"column:message"`
 	SenderType       string    `gorm:"column:sender_type"`
 	Time             time.Time `gorm:"column:time"`
-	CreatedAt        time.Time `gorm:"column:created_at;autoCreateTime"`
-	UpdatedAt        time.Time `gorm:"column:updated_at;autoUpdateTime"`
+	CreatedAt        time.Time `gorm:"column:created_at"`
+	UpdatedAt        time.Time `gorm:"column:updated_at"`
 }
 
 func (ChatData) TableName() string {

@@ -92,3 +92,7 @@ func (s *UserChatService) CheckExpired(session string) (bool, error) {
 
 	return s.repo.CheckExpiredUserSession(session)
 }
+
+func (s *UserChatService) DeleteExpiredUsers() error {
+	return s.repo.DeleteExpiredUsers()
+}

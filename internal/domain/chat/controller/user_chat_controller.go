@@ -109,3 +109,16 @@ func (c *UserChatController) CheckExpiredSession(ctx *gin.Context) {
 		"expired": expired,
 	})
 }
+
+func (c *UserChatController) DeleteExpiredUsersSheduler(ctx *gin.Context) {
+	if err := c.service.DeleteExpiredUsers(); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "expired users deleted successfully",
+	})
+}

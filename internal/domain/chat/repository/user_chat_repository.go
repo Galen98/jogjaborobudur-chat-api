@@ -55,3 +55,54 @@ func (r *UserChatRepository) CheckExpiredUserSession(session string) (bool, erro
 
 	return false, nil
 }
+
+func (r *UserChatRepository) DeleteExpiredUsers() error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		var userSessions []string
+		if err := tx.
+			Model(&entity.UserChat{}).
+			Where("expired_date <= CURRENT_DATE").
+			Pluck("user_session", &userSessions).
+			Error; err != nil {
+			return err
+		}
+
+		if len(userSessions) == 0 {
+			return nil
+		}
+
+		var tokens []string
+		if err := tx.
+			Model(&entity.ChatSession{}).
+			Where("user_session IN ?", userSessions).
+			Pluck("token", &tokens).
+			Error; err != nil {
+			return err
+		}
+
+		if len(tokens) > 0 {
+			if err := tx.
+				Where("chat_session_token IN ?", tokens).
+				Delete(&entity.ChatData{}).
+				Error; err != nil {
+				return err
+			}
+		}
+
+		if err := tx.
+			Where("user_session IN ?", userSessions).
+			Delete(&entity.ChatSession{}).
+			Error; err != nil {
+			return err
+		}
+
+		if err := tx.
+			Where("expired_date <= CURRENT_DATE").
+			Delete(&entity.UserChat{}).
+			Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}

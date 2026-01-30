@@ -7,4 +7,5 @@ type UserChatInterface interface {
 	FindByEmail(email string) (*entity.UserChat, error)
 	FindBySession(session string) (*entity.UserChat, error)
 	CheckExpiredUserSession(session string) (bool, error)
+	DeleteExpiredUsers() error
 }

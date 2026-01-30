@@ -31,7 +31,9 @@ func (s *ChatDataService) SendMessage(req dto.SendChatRequest) (*entity.ChatData
 		ChatSessionToken: req.Token,
 		Message:          &req.Message,
 		SenderType:       req.SenderType,
-		Time:             time.Now(),
+		Time:             time.Now().UTC(),
+		CreatedAt:        time.Now().UTC(),
+		UpdatedAt:        time.Now().UTC(),
 	}
 
 	saved, err := s.messageRepo.SaveMessage(chat)

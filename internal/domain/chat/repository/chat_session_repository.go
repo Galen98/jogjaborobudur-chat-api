@@ -101,6 +101,10 @@ func (r *ChatSessionRepository) GetAllChatSession() ([]dto.AdminSessionDto, erro
 	return result, nil
 }
 
+func (r *ChatDataRepository) DeleteExpiredSession() {
+
+}
+
 func (r *ChatSessionRepository) GetAdminSessionByToken(token string) (*dto.AdminSessionDto, error) {
 	var result dto.AdminSessionDto
 

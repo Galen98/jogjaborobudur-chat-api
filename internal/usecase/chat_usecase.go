@@ -85,7 +85,7 @@ func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, er
 		session.IsReadAdmin = true
 	}
 
-	session.UpdatedAt = time.Now()
+	session.UpdatedAt = time.Now().UTC()
 
 	if err := u.chatSessionService.UpdateSessionStatus(session); err != nil {
 		return nil, err

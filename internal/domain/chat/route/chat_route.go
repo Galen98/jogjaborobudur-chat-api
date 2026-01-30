@@ -21,6 +21,7 @@ func ChatRoute(r *gin.RouterGroup, db *gorm.DB, uc *usecase.ChatUseCase) {
 
 	useChatCtrl := controller.NewChatUseCaseController(uc)
 
+	r.GET("/delete-expired-users", userCtrl.DeleteExpiredUsersSheduler)
 	r.POST("/user-chat", userCtrl.CreateUserChat)
 	r.POST("/user-chat-expired", userCtrl.CheckExpiredSession)
 	r.GET("/user-chat", userCtrl.GetUserBySession)
