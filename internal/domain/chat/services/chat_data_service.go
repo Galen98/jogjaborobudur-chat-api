@@ -74,5 +74,16 @@ func (s *ChatDataService) GetMessagesPaginated(
 	offset int,
 ) ([]entity.ChatData, error) {
 
-	return s.messageRepo.GetMessagesByToken(token, limit, offset)
+	messages, err := s.messageRepo.GetMessagesByToken(token, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range messages {
+		messages[i].CreatedAt = messages[i].CreatedAt.UTC()
+		messages[i].UpdatedAt = messages[i].UpdatedAt.UTC()
+		messages[i].Time = messages[i].Time.UTC()
+	}
+
+	return messages, nil
 }

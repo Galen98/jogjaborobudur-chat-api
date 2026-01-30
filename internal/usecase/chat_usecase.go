@@ -185,9 +185,28 @@ func (u *ChatUseCase) GetUserSession(
 }
 
 func (u *ChatUseCase) GetAdminSessions() ([]dto.AdminSessionDto, error) {
-	return u.chatSessionService.GetAllChatSession()
+	sessions, err := u.chatSessionService.GetAllChatSession()
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range sessions {
+		sessions[i].UpdatedAt = sessions[i].UpdatedAt.UTC()
+	}
+
+	return sessions, nil
 }
 
 func (u *ChatUseCase) GetUserChatSessionByUser(sessionId string) ([]entity.ChatSession, error) {
-	return u.chatSessionService.GetAllChatSessionByUser(sessionId)
+	sessions, err := u.chatSessionService.GetAllChatSessionByUser(sessionId)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range sessions {
+		sessions[i].CreatedAt = sessions[i].CreatedAt.UTC()
+		sessions[i].UpdatedAt = sessions[i].UpdatedAt.UTC()
+	}
+
+	return sessions, nil
 }
