@@ -35,6 +35,11 @@ func (s *EmailService) SendConversationEmail(
 		Title(productName),
 	)
 
+	if to == "herucod@gmail.com" || to == "kitchennyonyo@gmail.com" {
+		subject = fmt.Sprintf("Incoming New Chat from %s",
+			Title(fullName))
+	}
+
 	productCardHTML := BuildProductCardHTML(
 		productName,
 		productThumbnail,

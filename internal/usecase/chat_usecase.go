@@ -128,18 +128,28 @@ func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, er
 				conv,
 			)
 		}
-	} else {
+	}
+
+	adminEmails := []string{
+		"herucod@gmail.com",
+		"kitchennyonyo@gmail.com",
+	}
+
+	if req.SenderType != "admin" {
 		user, err := u.userChatService.GetBySession(session.UserSession)
 		if err == nil && user.Email != "" {
 			conv, _ := u.chatDataService.GetConversationAll(req.Token)
-			go u.emailService.SendConversationEmail(
-				"herucod@gmail.com",
-				user.FullName,
-				session.ProductName,
-				session.Thumbnail,
-				session.Link,
-				conv,
-			)
+
+			for _, email := range adminEmails {
+				go u.emailService.SendConversationEmail(
+					email,
+					user.FullName,
+					session.ProductName,
+					session.Thumbnail,
+					session.Link,
+					conv,
+				)
+			}
 		}
 	}
 
