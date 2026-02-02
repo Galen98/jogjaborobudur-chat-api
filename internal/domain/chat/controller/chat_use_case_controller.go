@@ -85,14 +85,18 @@ func (c *ChatUseCaseController) GetMessages(ctx *gin.Context) {
 		})
 		return
 	}
-	responses := make([]dto.ChatDataResponse, 0)
-	for _, msg := range messages {
-		responses = append(responses, MapChatDataToResponse(msg))
-	}
+	// responses := make([]dto.ChatDataResponse, 0)
+	// for _, msg := range messages {
+	// 	responses = append(responses, MapChatDataToResponse(msg))
+	// }
 
+	// ctx.JSON(http.StatusOK, gin.H{
+	// 	"token":   token,
+	// 	"message": responses,
+	// })
 	ctx.JSON(http.StatusOK, gin.H{
 		"token":   token,
-		"message": responses,
+		"message": messages,
 	})
 
 }
