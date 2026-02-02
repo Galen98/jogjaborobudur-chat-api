@@ -128,6 +128,19 @@ func (u *ChatUseCase) SendMessage(req dto.SendChatRequest) (*entity.ChatData, er
 				conv,
 			)
 		}
+	} else {
+		user, err := u.userChatService.GetBySession(session.UserSession)
+		if err == nil && user.Email != "" {
+			conv, _ := u.chatDataService.GetConversationAll(req.Token)
+			go u.emailService.SendConversationEmail(
+				"herucod@gmail.com",
+				user.FullName,
+				session.ProductName,
+				session.Thumbnail,
+				session.Link,
+				conv,
+			)
+		}
 	}
 
 	return msg, nil
