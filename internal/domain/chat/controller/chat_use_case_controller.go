@@ -2,6 +2,7 @@ package controller
 
 import (
 	"jogjaborobudur-chat/internal/domain/chat/dto"
+	"jogjaborobudur-chat/internal/domain/chat/entity"
 	"jogjaborobudur-chat/internal/usecase"
 	"net/http"
 	"strconv"
@@ -53,6 +54,18 @@ func (c *ChatUseCaseController) SendMessage(ctx *gin.Context) {
 
 }
 
+func MapChatDataToResponse(cd entity.ChatData) dto.ChatDataResponse {
+	return dto.ChatDataResponse{
+		ID:               cd.ID,
+		ChatSessionToken: cd.ChatSessionToken,
+		Message:          cd.Message,
+		SenderType:       cd.SenderType,
+		Time:             cd.Time.UTC().String(),
+		CreatedAt:        cd.CreatedAt.UTC().String(),
+		UpdatedAt:        cd.UpdatedAt.UTC().String(),
+	}
+}
+
 func (c *ChatUseCaseController) GetMessages(ctx *gin.Context) {
 	token := ctx.Query("token")
 	limitStr := ctx.Query("limit")
@@ -72,9 +85,14 @@ func (c *ChatUseCaseController) GetMessages(ctx *gin.Context) {
 		})
 		return
 	}
+	responses := make([]dto.ChatDataResponse, 0)
+	for _, msg := range messages {
+		responses = append(responses, MapChatDataToResponse(msg))
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"token":   token,
-		"message": messages,
+		"message": responses,
 	})
 
 }

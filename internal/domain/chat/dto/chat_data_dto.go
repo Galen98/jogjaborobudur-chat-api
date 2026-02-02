@@ -1,6 +1,8 @@
 package dto
 
-import "time"
+import (
+	"time"
+)
 
 type GetChatHistoryRequest struct {
 	Token string `json:"token" binding:"required"`
@@ -43,4 +45,14 @@ type BaseResponse struct {
 	Status  bool        `json:"status"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`
+}
+
+type ChatDataResponse struct {
+	ID               uint    `json:"id"`
+	ChatSessionToken string  `json:"chat_session_token"`
+	Message          *string `json:"message"`
+	SenderType       string  `json:"sender_type"`
+	Time             string  `json:"time"`
+	CreatedAt        string  `json:"created_at"`
+	UpdatedAt        string  `json:"updated_at"`
 }
