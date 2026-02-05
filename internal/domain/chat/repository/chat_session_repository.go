@@ -52,7 +52,7 @@ func (r *ChatSessionRepository) UpdateSession(session *entity.ChatSession) error
 func (r *ChatSessionRepository) UpdateSessionOpen(session *entity.ChatSession) error {
 	return r.db.Model(&entity.ChatSession{}).
 		Where("token = ?", session.Token).
-		Updates(map[string]interface{}{
+		UpdateColumns(map[string]interface{}{
 			"is_read":       session.IsRead,
 			"is_read_admin": session.IsReadAdmin,
 		}).Error
