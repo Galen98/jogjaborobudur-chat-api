@@ -1,5 +1,7 @@
 package dto
 
+import "jogjaborobudur-chat/internal/domain/chat/entity"
+
 type CreateChatSessionRequest struct {
 	Token       string `json:"token"`
 	Session     string `json:"session"`
@@ -44,4 +46,10 @@ type GetAllSessionAdminResponse struct {
 type GetChatSessionRequest struct {
 	SessionID string `json:"session_id"`
 	ProductID uint   `json:"product_id"`
+}
+
+type ChatSessionWithUser struct {
+	entity.ChatSession
+	Email    string `json:"email"`
+	FullName string `json:"full_name"`
 }

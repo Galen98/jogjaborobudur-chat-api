@@ -25,9 +25,16 @@ func (r *ChatSessionRepository) InitChatSession(chatsession *entity.ChatSession)
 	return r.db.Create(chatsession).Error
 }
 
-func (r *ChatSessionRepository) GetChatSessionByUser(session string, productId uint) (*entity.ChatSession, error) {
-	var chatsession entity.ChatSession
-	err := r.db.Where("user_session = ? AND product_id = ?", session, productId).First(&chatsession).Error
+func (r *ChatSessionRepository) GetChatSessionByUser(session string, productId uint) (*dto.ChatSessionWithUser, error) {
+	//var chatsession entity.ChatSession
+	//err := r.db.Where("user_session = ? AND product_id = ?", session, productId).First(&chatsession).Error
+	var result dto.ChatSessionWithUser
+	err := r.db.
+		Table("chat_session").
+		Select("chat_session.*, user_chat.email, user_chat.full_name").
+		Joins("JOIN user_chat ON user_chat.session = chat_session.user_session").
+		Where("chat_session.user_session = ? AND chat_session.product_id = ?", session, productId).
+		First(&result).Error
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -36,7 +43,7 @@ func (r *ChatSessionRepository) GetChatSessionByUser(session string, productId u
 
 		return nil, err
 	}
-	return &chatsession, nil
+	return &result, nil
 }
 
 func (r *ChatSessionRepository) UpdateSession(session *entity.ChatSession) error {

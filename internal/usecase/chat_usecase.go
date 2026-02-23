@@ -203,7 +203,7 @@ func (u *ChatUseCase) OpenChatByUser(token string, types string) error {
 func (u *ChatUseCase) GetUserSession(
 	sessionId string,
 	productId uint,
-) (*entity.ChatSession, error) {
+) (*dto.ChatSessionWithUser, error) {
 	return u.chatSessionService.GetChatSessionByUser(sessionId, productId)
 }
 

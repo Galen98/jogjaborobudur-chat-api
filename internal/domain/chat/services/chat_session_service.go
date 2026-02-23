@@ -18,7 +18,7 @@ func NewChatSessionService(repo interfaces.ChatSessionInterface) *ChatSessionSer
 func (s *ChatSessionService) GetChatSessionByUser(
 	sessionId string,
 	productId uint,
-) (*entity.ChatSession, error) {
+) (*dto.ChatSessionWithUser, error) {
 
 	return s.repo.GetChatSessionByUser(sessionId, productId)
 }
